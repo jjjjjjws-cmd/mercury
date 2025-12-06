@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="다이소 유지보수 업체 관리 시스템">
+    <meta name="theme-color" content="#2196f3">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="다이소 업체관리">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='%232196f3'/%3E%3Ctext x='100' y='120' font-size='100' text-anchor='middle' fill='white' font-family='Arial'%3E🏪%3C/text%3E%3C/svg%3E">
+    <title>다이소 유지보수 업체 관리</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .main-layout {
+            display: block;
+        }
+
+        .content-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            background: #e0e0e0;
+            color: #666;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            background: #d0d0d0;
+        }
+
+        .tab.active {
+            background: #0066cc;
+            color: white;
+        }
+
+        .tab.active.cooperation { background: #e74c3c; }
+        .tab.active.autodoor { background: #3498db; }
+        .tab.active.awning { background: #2ecc71; }
+        .tab.active.blind { background: #f39c12; }
+
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .search-box button {
+            padding: 12px 20px;
+            background: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .search-box button:hover {
+            background: #0052a3;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .button-group button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-add {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-add:hover {
+            background: #229954;
+        }
+
+        .btn-excel {
+            background: #16a085;
+            color: white;
+        }
+
+        .btn-excel:hover {
+            background: #138d75;
+        }
+
+        .btn-export {
+            background: #8e44ad;
+            color: white;
+        }
+
+        .btn-export:hover {
+            background: #7d3c98;
+        }
+
+        .btn-reset {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background: #7f8c8d;
+        }
+
+        .vendor-list {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .vendor-list h3 {
+            margin-bottom: 15px;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .vendor-count {
+            font-size: 14px;
+            color: #666;
+            font-weight: normal;
+        }
+
+        .vendor-item {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .vendor-item:hover {
+            background: #f8f9fa;
+            border-color: #0066cc;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .vendor-item h4 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .vendor-item p {
+            color: #666;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        .vendor-item .phone {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .vendor-item .phone:hover {
+            text-decoration: underline;
+        }
+
+        .vendor-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .vendor-actions button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .btn-edit-small {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-delete-small {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .btn-save {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background: #229954;
+        }
+
+        .btn-cancel {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: #7f8c8d;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-state p {
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏪 다이소 유지보수 업체 관리 시스템</h1>
+
+        <div class="main-layout">
+            <!-- 컨텐츠 섹션 -->
+            <div class="content-section">
+                <div class="tabs">
+                    <button class="tab active cooperation" data-type="cooperation">협력업체</button>
+                    <button class="tab autodoor" data-type="autodoor">자동문 업체</button>
+                    <button class="tab awning" data-type="awning">어닝 업체</button>
+                    <button class="tab blind" data-type="blind">블라인드 업체</button>
+                </div>
+
+                <div class="controls">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="업체명 또는 지역 검색">
+                        <button onclick="searchVendors()">🔍 검색</button>
+                    </div>
+
+                    <div class="button-group">
+                        <button class="btn-add" onclick="openAddModal()">➕ 업체 추가</button>
+                        <button class="btn-excel" onclick="document.getElementById('excelInput').click()">📁 엑셀 가져오기</button>
+                        <button class="btn-export" onclick="exportToExcel()">💾 엑셀 내보내기</button>
+                        <button class="btn-reset" onclick="resetFilter()">🔄 전체보기</button>
+                        <input type="file" id="excelInput" accept=".xlsx,.xls,.csv" onchange="importExcel(event)" style="display: none;">
+                    </div>
+                </div>
+
+                <div class="vendor-list">
+                    <h3>
+                        <span id="listTitle">협력업체 목록</span>
+                        <span class="vendor-count" id="vendorCount">0개</span>
+                    </h3>
+                    <div id="vendorListContainer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 업체 추가/수정 모달 -->
+    <div class="modal" id="vendorModal">
+        <div class="modal-content">
+            <h2 id="modalTitle">업체 추가</h2>
+            <form id="vendorForm">
+                <div class="form-group">
+                    <label>업체명 *</label>
+                    <input type="text" id="vendorName" required>
+                </div>
+                <div class="form-group">
+                    <label>전화번호 *</label>
+                    <input type="tel" id="vendorPhone" required placeholder="010-1234-5678">
+                </div>
+                <div class="form-group">
+                    <label>주소 *</label>
+                    <input type="text" id="vendorAddress" required placeholder="서울시 강남구...">
+                </div>
+                <div class="form-group">
+                    <label>담당 지역</label>
+                    <input type="text" id="vendorRegion" placeholder="강남, 서초, 송파">
+                </div>
+                <div class="form-group">
+                    <label>메모</label>
+                    <textarea id="vendorMemo" placeholder="작업 이력, 특이사항, 계약 조건 등"></textarea>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-save">저장</button>
+                    <button type="button" class="btn-cancel" onclick="closeModal()">취소</button>
+                    <button type="button" class="btn-delete" id="deleteBtn" style="display:none;" onclick="deleteVendor()">삭제</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let vendors = {
+            cooperation: [],
+            autodoor: [],
+            awning: [],
+            blind: []
+        };
+        let currentType = 'cooperation';
+        let editingVendorId = null;
+
+        const typeNames = {
+            cooperation: '협력업체',
+            autodoor: '자동문 업체',
+            awning: '어닝 업체',
+            blind: '블라인드 업체'
+        };
+
+        // 필터 초기화
+        function resetFilter() {
+            document.getElementById('searchInput').value = '';
+            updateVendorList();
+        }
+
+        // 로컬 스토리지에서 데이터 로드
+        function loadData() {
+            const saved = localStorage.getItem('daisoVendors');
+            if (saved) {
+                vendors = JSON.parse(saved);
+            }
+        }
+
+        // 로컬 스토리지에 데이터 저장
+        function saveData() {
+            localStorage.setItem('daisoVendors', JSON.stringify(vendors));
+        }
+
+        // 초기화
+        function init() {
+            loadData();
+            updateVendorList();
+        }
+
+        // 탭 전환
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                currentType = this.dataset.type;
+                updateVendorList();
+                document.getElementById('listTitle').textContent = typeNames[currentType] + ' 목록';
+            });
+        });
+
+        // 업체 목록 업데이트
+        function updateVendorList(filtered = null) {
+            const container = document.getElementById('vendorListContainer');
+            let currentVendors = filtered !== null ? filtered : vendors[currentType];
+            
+            document.getElementById('vendorCount').textContent = currentVendors.length + '개';
+
+            if (currentVendors.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p>등록된 업체가 없습니다.</p>
+                        <button class="btn-add" onclick="openAddModal()">업체 추가하기</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = currentVendors.map(vendor => `
+                <div class="vendor-item">
+                    <h4>${vendor.name}</h4>
+                    <p>📞 <a href="tel:${vendor.phone}" class="phone">${vendor.phone}</a></p>
+                    <p>📍 ${vendor.address}</p>
+                    ${vendor.region ? `<p>🗺️ 담당 지역: ${vendor.region}</p>` : ''}
+                    ${vendor.memo ? `<p>📝 ${vendor.memo}</p>` : ''}
+                    <div class="vendor-actions">
+                        <button class="btn-edit-small" onclick="editVendor('${vendor.id}')">수정</button>
+                        <button class="btn-delete-small" onclick="confirmDelete('${vendor.id}')">삭제</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 업체 추가 모달 열기
+        function openAddModal() {
+            editingVendorId = null;
+            document.getElementById('modalTitle').textContent = '업체 추가';
+            document.getElementById('vendorForm').reset();
+            document.getElementById('deleteBtn').style.display = 'none';
+            document.getElementById('vendorModal').classList.add('active');
+        }
+
+        // 업체 수정
+        function editVendor(id) {
+            const vendor = vendors[currentType].find(v => v.id === id);
+            if (!vendor) return;
+
+            editingVendorId = id;
+            document.getElementById('modalTitle').textContent = '업체 수정';
+            document.getElementById('vendorName').value = vendor.name;
+            document.getElementById('vendorPhone').value = vendor.phone;
+            document.getElementById('vendorAddress').value = vendor.address;
+            document.getElementById('vendorRegion').value = vendor.region || '';
+            document.getElementById('vendorMemo').value = vendor.memo || '';
+            document.getElementById('deleteBtn').style.display = 'block';
+            document.getElementById('vendorModal').classList.add('active');
+        }
+
+        // 모달 닫기
+        function closeModal() {
+            document.getElementById('vendorModal').classList.remove('active');
+            editingVendorId = null;
+        }
+
+        // 업체 저장
+        document.getElementById('vendorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const vendor = {
+                id: editingVendorId || Date.now().toString(),
+                name: document.getElementById('vendorName').value.trim(),
+                phone: document.getElementById('vendorPhone').value.trim(),
+                address: document.getElementById('vendorAddress').value.trim(),
+                region: document.getElementById('vendorRegion').value.trim(),
+                memo: document.getElementById('vendorMemo').value.trim()
+            };
+
+            if (editingVendorId) {
+                const index = vendors[currentType].findIndex(v => v.id === editingVendorId);
+                vendors[currentType][index] = vendor;
+            } else {
+                vendors[currentType].push(vendor);
+            }
+
+            saveData();
+            updateVendorList();
+            closeModal();
+            alert('저장되었습니다!');
+        });
+
+        // 업체 삭제
+        function deleteVendor() {
+            if (!editingVendorId) return;
+            if (!confirm('정말 삭제하시겠습니까?')) return;
+
+            vendors[currentType] = vendors[currentType].filter(v => v.id !== editingVendorId);
+            saveData();
+            updateVendorList();
+            closeModal();
+        }
+
+        function confirmDelete(id) {
+            if (!confirm('정말 삭제하시겠습니까?')) return;
+            
+            vendors[currentType] = vendors[currentType].filter(v => v.id !== id);
+            saveData();
+            updateVendorList();
+        }
+
+        // 검색
+        function searchVendors() {
+            const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+
+            if (!searchTerm) {
+                updateVendorList();
+                return;
+            }
+
+            const filtered = vendors[currentType].filter(vendor => {
+                return vendor.name.toLowerCase().includes(searchTerm) ||
+                       vendor.address.toLowerCase().includes(searchTerm) ||
+                       (vendor.region && vendor.region.toLowerCase().includes(searchTerm));
+            });
+
+            updateVendorList(filtered);
+        }
+
+        // 엑셀 내보내기
+        function exportToExcel() {
+            const currentVendors = vendors[currentType];
+            if (currentVendors.length === 0) {
+                alert('내보낼 데이터가 없습니다.');
+                return;
+            }
+
+            let csv = '업체명,전화번호,주소,담당지역,메모\n';
+            currentVendors.forEach(vendor => {
+                csv += `"${vendor.name}","${vendor.phone}","${vendor.address}","${vendor.region || ''}","${vendor.memo || ''}"\n`;
+            });
+
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${typeNames[currentType]}_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+            
+            alert(`${currentVendors.length}개 업체를 내보냈습니다!`);
+        }
+
+        // 엑셀 가져오기
+        function importExcel(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const fileName = file.name.toLowerCase();
+            
+            if (fileName.endsWith('.csv')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    processCSV(e.target.result);
+                };
+                reader.readAsText(file, 'UTF-8');
+            } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, {type: 'array'});
+                        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                        const csvData = XLSX.utils.sheet_to_csv(firstSheet);
+                        processCSV(csvData);
+                    } catch (error) {
+                        alert('Excel 파일을 읽는 중 오류가 발생했습니다.\n\n파일을 CSV로 저장한 후 다시 시도해주세요.');
+                        console.error(error);
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            } else {
+                alert('CSV 또는 Excel 파일만 지원합니다.');
+            }
+            
+            event.target.value = '';
+        }
+
+        // CSV 데이터 처리
+        function processCSV(csvText) {
+            const lines = csvText.split('\n');
+            const vendorsToAdd = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+
+                const matches = line.match(/(".*?"|[^,]+)(?=\s*,|\s*$)/g);
+                if (!matches || matches.length < 3) continue;
+
+                const name = matches[0].replace(/"/g, '').trim();
+                const phone = matches[1].replace(/"/g, '').trim();
+                const address = matches[2].replace(/"/g, '').trim();
+                const region = matches[3] ? matches[3].replace(/"/g, '').trim() : '';
+                const memo = matches[4] ? matches[4].replace(/"/g, '').trim() : '';
+
+                if (name && phone && address) {
+                    vendorsToAdd.push({ name, phone, address, region, memo });
+                }
+            }
+
+            if (vendorsToAdd.length === 0) {
+                alert('가져올 데이터가 없습니다.\n\n파일 형식을 확인해주세요:\n업체명,전화번호,주소,담당지역,메모');
+                return;
+            }
+
+            let added = 0;
+            let duplicates = 0;
+
+            vendorsToAdd.forEach(vendorData => {
+                const exists = vendors[currentType].some(v => 
+                    v.name === vendorData.name && v.phone === vendorData.phone
+                );
+
+                if (!exists) {
+                    const vendor = {
+                        id: Date.now().toString() + '-' + Math.random().toString(36).substr(2, 9),
+                        name: vendorData.name,
+                        phone: vendorData.phone,
+                        address: vendorData.address,
+                        region: vendorData.region,
+                        memo: vendorData.memo
+                    };
+                    vendors[currentType].push(vendor);
+                    added++;
+                } else {
+                    duplicates++;
+                }
+            });
+
+            saveData();
+            updateVendorList();
+
+            let message = `완료!\n\n추가됨: ${added}개`;
+            if (duplicates > 0) {
+                message += `\n중복 건너뜀: ${duplicates}개`;
+            }
+            alert(message);
+        }
+
+        // 페이지 로드 시 초기화
+        window.onload = init;
+
+        // PWA 서비스 워커 등록
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(registration => {
+                    console.log('서비스 워커 등록 성공:', registration);
+                })
+                .catch(error => {
+                    console.log('서비스 워커 등록 실패:', error);
+                });
+        }
+
+        // PWA 설치 프롬프트
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // 설치 안내 배너 표시
+            showInstallBanner();
+        });
+
+        function showInstallBanner() {
+            const banner = document.createElement('div');
+            banner.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                right: 20px;
+                background: #2196f3;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 10000;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-size: 14px;
+            `;
+            banner.innerHTML = `
+                <span>📱 홈 화면에 앱 추가하기</span>
+                <div>
+                    <button onclick="installPWA()" style="background: white; color: #2196f3; border: none; padding: 8px 15px; border-radius: 5px; margin-right: 10px; font-weight: bold; cursor: pointer;">설치</button>
+                    <button onclick="this.parentElement.parentElement.remove()" style="background: transparent; color: white; border: 1px solid white; padding: 8px 15px; border-radius: 5px; cursor: pointer;">닫기</button>
+                </div>
+            `;
+            document.body.appendChild(banner);
+        }
+
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('앱 설치 완료');
+                    }
+                    deferredPrompt = null;
+                });
+            }
+            // 배너 제거
+            const banner = document.querySelector('div[style*="position: fixed"]');
+            if (banner) banner.remove();
+        }
+
+        // 앱 설치 완료 후
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA 설치 완료');
+            deferredPrompt = null;
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</body>
+</html>
