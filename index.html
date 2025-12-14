@@ -282,6 +282,27 @@
             color: white;
         }
 
+        .btn-copy {
+            padding: 4px 8px;
+            background: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .btn-copy:hover {
+            background: #7f8c8d;
+            transform: scale(1.1);
+        }
+
+        .btn-copy:active {
+            transform: scale(0.95);
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -688,7 +709,10 @@
                 <div class="vendor-item">
                     <h4>${vendor.name}</h4>
                     <p>📞 <a href="tel:${vendor.phone}" class="phone">${vendor.phone}</a></p>
-                    <p>📍 ${vendor.address}</p>
+                    <p style="display: flex; align-items: center; gap: 8px;">
+                        📍 ${vendor.address}
+                        <button class="btn-copy" onclick="copyAddress('${vendor.address.replace(/'/g, "\\'")}'); event.stopPropagation();" title="주소 복사">📋</button>
+                    </p>
                     ${vendor.region ? `<p>🗺️ 담당 지역: ${vendor.region}</p>` : ''}
                     ${vendor.memo ? `<p>📝 ${vendor.memo}</p>` : ''}
                     <div class="vendor-actions">
@@ -946,6 +970,39 @@
             });
 
             updateVendorList(filtered);
+        }
+
+        // 주소 복사
+        function copyAddress(address) {
+            // 클립보드에 복사
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(address).then(() => {
+                    alert('주소가 복사되었습니다!\n\n' + address);
+                }).catch(() => {
+                    // 실패 시 대체 방법
+                    fallbackCopy(address);
+                });
+            } else {
+                // 구형 브라우저 대응
+                fallbackCopy(address);
+            }
+        }
+
+        // 클립보드 복사 대체 방법 (구형 브라우저)
+        function fallbackCopy(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                alert('주소가 복사되었습니다!\n\n' + text);
+            } catch (err) {
+                alert('복사 실패. 주소:\n\n' + text);
+            }
+            document.body.removeChild(textArea);
         }
 
         // 엑셀 양식 다운로드
